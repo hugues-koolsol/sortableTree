@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="fr">
+ <head>
+  <meta charset="utf-8" />
+  <title>A simple tree and/or sort javascript</title>
+  <meta name="viewport" content="width=device-width,user-scalable=0,initial-scale=1,maximum-scale=1,minimum-scale=1" />  
+<style type="text/css">
+/*======================================= tree =============================*/
+.class_treediv1{
+ border:1px #F7F3CA outset;
+ height:40px;
+ overflow:hidden;
+ display : flex; 
+ flex-direction: row;
+ justify-content: space-between; 
+}
+.class_treeIntervalldiv2{border:1px #F7F3CA solid;}
+.class_treeTextContentdiv3{text-align:left;flex-grow:1;}
+.class_treedivFolder1{border:0px lime solid;}
+.class_treeFold1,.class_treeDelet1{
+ display:inline-block;
+ float:left;
+ height:30px;
+ min-width:30px;
+ border:1px #F7F3CA outset;
+ text-align: center;
+ text-decoration: none;
+ font-size: 2em;
+ line-height: 1.1em;
+ border-radius:5px;
+ color:black;
+ font-weight:bold;
+ cursor:pointer;
+ font-family:monospace;
+}
+.class_treeHandle1{
+ border:1px #F7F3CA outset;
+ display:inline-block;
+ float:right;
+ height:30px;
+ width:30px;
+ min-width:45px;
+ text-align: center;
+ text-decoration: none;
+ font-size: 1.5em;
+ line-height: 1.6em;
+ border-radius:5px;
+ font-family:monospace;
+ cursor:pointer;
+}
+.class_tree_yydanger {
+    color: #FFFFFF!important;
+    background: linear-gradient(to bottom, #FF0000, #D30000)!important;
+    font-size: 1.5em;
+    display: inline-block;
+    text-decoration: none;
+    text-align: center;
+    border-radius: 5px;
+    font-family: verdana, arial, sans-serif;
+    cursor: pointer;
+    min-width: 40px;
+    min-height: 30px;
+    line-height: 30px;
+    border: 1px #F7F3CA outset;
+}
+
+</style>
+  <script src="hdtree.js?v=20220323-1917"></script>
+ </head>
+ <body>
+  
+<h1>A simple sortable tree and/or list in javascript</h2>
+
+  
+<div>
+    <a href="javascript:getMyTree1()">GetTree : oMyTree1 =&gt; see the console</a>
+    <br />
+    <a href="javascript:addElement1()">Add an element to the tree</a>
+</div>
+
+
+
+<h2>example</h2>
+
+<!-- 
+ always put a max-width in % or px because you must still scroll the page on a small device 
+-->
+<div id="container1" style="max-width:80%;border:1px #000 solid;overflow-y:scroll;max-height:400px;">
+  <div id="myTreeId1" style="/*must be void*/"></div>
+</div>
+
+
+
+<script type="text/javascript">
+//====================================================================================================
+//====================================================================================================
+// this is the tree as it should exist in database. you can put more elements in data
+// the order of elements in jsonTree1 is not important put parentId<-->id must be valid
+var jsonTree1=[
+ {id :  2 , data:{label:'a'  } , parentId : 0 , isOpen : 1 },
+ {id :  4 , data:{label:'aa' } , parentId : 2 , isOpen : 1 },
+ {id :  6 , data:{label:'aaa'} , parentId : 4 , isOpen : 1 },
+ {id :  8 , data:{label:'aab'} , parentId : 4 , isOpen : 1 },
+ {id : 10 , data:{label:'ab' } , parentId : 2 , isOpen : 1 },
+ {id : 12 , data:{label:'b'  } , parentId : 0 , isOpen : 1 },
+ {id : 14 , data:{label:'c'  } , parentId : 0 , isOpen : 1 },
+ {id : 16 , data:{label:'d'  } , parentId : 0 , isOpen : 1 },
+ {id : 18 , data:{label:'e'  } , parentId : 0 , isOpen : 1 },
+ {id : 20 , data:{label:'f'  } , parentId : 0 , isOpen : 1 },
+ {id : 22 , data:{label:'g'  } , parentId : 0 , isOpen : 1 },
+ {id : 24 , data:{label:'h'  } , parentId : 0 , isOpen : 1 },
+ {id : 28 , data:{label:'i'  } , parentId : 0 , isOpen : 1 },
+ {id : 30 , data:{label:'j'  } , parentId : 0 , isOpen : 1 },
+ {id : 32 , data:{label:'k'  } , parentId : 0 , isOpen : 1 },
+ {id : 34 , data:{label:'<span style="color:green;font-weight:bold;">l test de texte assez long pour dépasser la taille de la boite</span>'  } , parentId : 0 , isOpen : 1 },
+];
+// these are the parameters you can tweek. add some if you wish ...
+var param1={
+ sortOnly            : false                       , // here it is a tree, if it was a list, it would be true
+ deleteFunctionName  : String('deleteFunction1')   , // delete function name , see under , '' if no delete
+ editFunctionName    : String('editFunction1')     , // edit function name , see under , '' if no edit
+ editButton          : true                        , // edit button ? true / false
+ design              : {
+ 
+  buttonsBorderWidthInPx      : parseInt('1px',10),   // default : 1px
+  elementHeightInPx           : parseInt('35px',10),  // default and minimum advise : 35px
+  elementBorderHeightInPx     : parseInt('1px',10),   // default : 1px
+ 
+  branchesLeftOffsetInPixels  : parseInt('12px',10),  // default : 12px
+  
+  intervalHeightInPixels      : parseInt('10px',10),  // default : 15px
+  intervalBorderNameStyle     : String('solid'),      // default : solid
+  intervalBorderHeight        : parseInt('1px',10),   // default : 1px // should be 0 or 1 px but you can put nnnpx if you want !
+  intervalBorderColor         : String('#eee'),       // default : #eee
+  thinBorderColor             : String('blue'),       // default : blue   or  globalCssSettings1.main.thinBorderColor.hexValue            if it exists
+  editBackground              : String('red'),        // default : red    or  globalCssSettings1.backgrounds.editBackground.hexValue      if it exists
+  successBackgroundColor      : String('green'),      // default : green  or  globalCssSettings1.backgrounds.successBackground.hexValue   if it exists
+  headerBackgroundColor       : String('yellow'),     // default : yellow or  globalCssSettings1.table.headerBackgroundColor.hexValue     if it exists
+ }
+}
+// then call the building of the tree with 
+var oMyTree1=new cMyTree1(
+ 'oMyTree1',  // this self object name
+ 'myTreeId1', // the id of the html < div > you want to fill
+ jsonTree1,   // the data
+ param1,      // the parameters
+ myCallBackAction1 // callback function name, MUST exist
+);
+
+//=========================================================
+// and here a callback function if you want to do something
+function myCallBackAction1(context,tree){
+ console.log(context);
+ switch(context){
+ 
+  case 'afterReorganize' :
+   console.log(tree);
+  break;
+  
+  case 'afterFold' :
+   console.log(tree);
+  break;
+  
+  case 'init' :
+   console.log(tree);
+  break;
+  
+  default:
+   console.log('context='+context,'tree=',tree);
+  break;
+ }
+}
+// if you want to delete a node
+function deleteFunction1(idToDelete){
+ if(!confirm('delete, really ?')){
+  return
+ }
+ // Here, do (ajax) database stuffs with idToDelete 
+ // ......
+ // and if success ...
+ oMyTree1.delete(idToDelete); // ... update the tree view
+}
+
+function editFunction1(idToDelete){
+ var value='';
+ for(var i=0;i<jsonTree1.length;i++){
+  if(jsonTree1[i].id==idToDelete){
+   value=jsonTree1[i].data.label;
+   break;
+  }
+ }
+ alert('edit node number '+idToDelete+'\nvalue="'+value+'"');
+}
+
+// if you want to get the current tree before recording all the tree in database
+function getMyTree1(){
+ console.log(oMyTree1.getTree());
+}
+// if you want to add an element
+function addElement1(){
+ var dt=new Date();
+ // do ajax database stuffs to get a new id and label and if success ...
+ oMyTree1.addElement({
+  newLabel : dt.getHours()+':'+dt.getMinutes()+':'+dt.getSeconds()+'.'+dt.getMilliseconds(),
+  newId    : dt.getTime() // ... put here the new id
+ })
+}
+
+
+</script>
+
+
+ </body>
+</html>
