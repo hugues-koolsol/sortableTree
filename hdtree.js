@@ -1,5 +1,5 @@
 "use strict";
-
+// the function drawTree1 does the main rendering job, you can tweek it easily
 function cMyTree1(objectName,divId,lintre1,optionParms,callBack1){
  "use strict";
 
@@ -29,7 +29,7 @@ function cMyTree1(objectName,divId,lintre1,optionParms,callBack1){
  ];
  
 
-
+ // globalCssSettings1.xxxx can be defined in the global scope of other javascript
  
  for(var i=0;i<designOptionsList1.length;i++){
   if(optionParms.hasOwnProperty('design') && optionParms.design.hasOwnProperty([designOptionsList1[i].paramName])){ // for class_treeIntervalldiv2
@@ -168,45 +168,6 @@ function cMyTree1(objectName,divId,lintre1,optionParms,callBack1){
    newTree2=[];
    newLinearTree1=[];
   }
-/*  
-  for(var i=0;i<lintre2.length;i++){ // elem // tree2
-   if(lintre2[i].parentId==parentId){   
-    count++;
-    linearTree0.push({
-     'id'       : lintre2[i].id       , 
-     'parentId' : lintre2[i].parentId ,
-     'data'     : lintre2[i].data     , 
-     'isOpen'   : lintre2[i].isOpen   , 
-     'position' : count               ,
-    });
-    if(count==1){
-     txt1+='<div class="class_treeIntervalldiv2" data-level="'+level+'"  data-id="'+lintre2[i].id+'" data-conttype="before" data-parentid="'+parentId+'" style="'+options1.class_treeIntervalldiv2.style+'"></div>';
-    }
-    txt1+='<div class="class_treediv1" data-level="'+level+'" data-id="'+lintre2[i].id+'" data-conttype="element" data-parentid="'+parentId+'" style="'+options1.class_treediv1.style+'">';
-    
-    // put here what you want, here it is the label and the (id)
-    txt1+=' <div class="class_treeTextContentdiv3">';
-    if(optionParms.noIdPrintAfterLabel && optionParms.noIdPrintAfterLabel==true){
-     txt1+=''+lintre2[i].data.label+'';         
-    }else{
-     txt1+=''+lintre2[i].data.label+' (' + lintre2[i].id+')';    
-    }
-    txt1+=' </div>';
-    
-    
-    txt1+=' <div class="class_treeHandle1" data-level="'+level+'" data-id="'+lintre2[i].id+'" data-conttype="element" data-parentid="'+parentId+'" style="'+options1.class_treeHandle1.style+'">&#8597;</div>';
-    txt1+='</div>';
-    txt1+='<div class="class_treedivFolder1" style="display:'+(lintre2[i].isOpen==1?'block':'none')+';'+options1.class_treedivFolder1.style+'" ';
-    txt1+=' data-level="'+level+'"  data-id="'+lintre2[i].id+'" data-conttype="folder"  data-isopen="'+lintre2[i].isOpen+'"  data-parentid="'+parentId+'">';
-    level++;
-    // recursive call
-    drawTree1(lintre2,level,lintre2[i].id,context);
-    txt1+='</div>';
-    level--;
-    txt1+='<div class="class_treeIntervalldiv2" data-level="'+level+'"  data-id="'+lintre2[i].id+'" data-conttype="after"  data-parentid="'+parentId+'" style="'+options1.class_treeIntervalldiv2.style+'"></div>';
-   }
-  }
-*/ 
   var branch=null; 
   for(var elem in lintre2){ // elem // tree2
    branch=lintre2[elem];
@@ -224,9 +185,9 @@ function cMyTree1(objectName,divId,lintre1,optionParms,callBack1){
     }
     txt1+='<div class="class_treediv1" data-level="'+level+'" data-id="'+branch.id+'" data-conttype="element" data-parentid="'+parentId+'" style="'+options1.class_treediv1.style+'">';
     
-    // put here what you want, here it is the label and the (id)
+    // Put here what you want. Here it is the label and the (id)
     txt1+=' <div class="class_treeTextContentdiv3">';
-    if(optionParms.noIdPrintAfterLabel && optionParms.noIdPrintAfterLabel==true){
+    if(optionParms.hideIdAfterLabel && optionParms.hideIdAfterLabel==true){
      txt1+=''+branch.data.label+'';         
     }else{
      txt1+=''+branch.data.label+' (' + branch.id+')';    
@@ -234,7 +195,7 @@ function cMyTree1(objectName,divId,lintre1,optionParms,callBack1){
     txt1+=' </div>';
     
     
-    txt1+=' <div class="class_treeHandle1" data-level="'+level+'" data-id="'+branch.id+'" data-conttype="element" data-parentid="'+parentId+'" style="'+options1.class_treeHandle1.style+'">&#8597;</div>';
+    txt1+=' <div class="class_treeHandle1" data-level="'+level+'" data-id="'+branch.id+'" data-conttype="element" data-parentid="'+parentId+'" style="'+options1.class_treeHandle1.style+'">&#8597;</div>'; // ⇳ ⇕ ⇵
     txt1+='</div>';
     txt1+='<div class="class_treedivFolder1" style="display:'+(branch.isOpen==1?'block':'none')+';'+options1.class_treedivFolder1.style+'" ';
     txt1+=' data-level="'+level+'"  data-id="'+branch.id+'" data-conttype="folder"  data-isopen="'+branch.isOpen+'"  data-parentid="'+parentId+'">';
@@ -250,7 +211,7 @@ function cMyTree1(objectName,divId,lintre1,optionParms,callBack1){
    // the html tree is build, we display it
    document.getElementById(divId).innerHTML=txt1;
    
-   // and add the buttons +/- and delete
+   // and then we add the buttons +/- and delete/edit
    var lst=document.getElementById(divId).getElementsByTagName('div');
    for(var i=0;i<lst.length;i++){
     if(lst[i].className=='class_treedivFolder1'){ // put the plus/minus buttons to open/close a folder
@@ -260,10 +221,10 @@ function cMyTree1(objectName,divId,lintre1,optionParms,callBack1){
        if(lst2[j].getAttribute('data-id') == lst[i].getAttribute('data-id') && lst2[j].className=='class_treediv1'){
         var t='';
         if(lst[i].getAttribute('data-isopen')=='1'){
-         // fold -
+         // fold buttons "-" are added here
          t='<a class="class_treeFold1" data-id="'+lst[i].getAttribute('data-id')+'" href="javascript:'+objectName+'.fold('+lst[i].getAttribute('data-id')+')" style="'+options1.class_treeFold1.style+'">-</a>';
         }else{
-         // unfold +
+         // unfold buttons "+" are added here
          t='<a class="class_treeFold1" data-id="'+lst[i].getAttribute('data-id')+'" href="javascript:'+objectName+'.fold('+lst[i].getAttribute('data-id')+')" style="'+options1.class_treeFold1.style+'">+</a>';
         }
         if(options1.deleteFunctionName!==''){
@@ -680,18 +641,11 @@ function cMyTree1(objectName,divId,lintre1,optionParms,callBack1){
    globPositions[i].element.style.backgroundColor=options1.design['headerBackgroundColor']; // 'white'
   }
   if(globGoodY>=0){
-//   console.log('globGoodY='+globGoodY+',initialPositionInArray='+initialPositionInArray);
    finalPositionInArray=-1;
    for(var i=0;i<globPositions.length;i++){
     if(globPositions[i].top==globGoodY){
      finalPositionInArray=i;
      if(initialPositionInArray>=0&& finalPositionInArray>=0 && initialPositionInArray!==finalPositionInArray && initialPositionInArray-1!=finalPositionInArray ){
-//      console.log('do the job here : initialPositionInArray='+initialPositionInArray+',finalPositionInArray='+finalPositionInArray);
-//      console.log(
-//       globPositions[finalPositionInArray].element.getAttribute('data-conttype'),
-//       globPositions[finalPositionInArray].element.getAttribute('data-id'),
-//       globPositions[finalPositionInArray].element.getAttribute('data-parentid')
-//      );
       newLinearTree1=[];
       var toMove=null;
       var sourceId=parseInt(globPositions[initialPositionInArray].element.getAttribute('data-id'),10);
@@ -756,11 +710,7 @@ function cMyTree1(objectName,divId,lintre1,optionParms,callBack1){
          }
         }
        }
-//       console.log('we moved '+toMove.id+ ' ' +typeOfMove+' '+targetId);
-//       for(var i=0;i<newLinearTree1.length;i++){
-//        console.log(newLinearTree1[i].id,newLinearTree1[i].parentId,newLinearTree1[i].data);
-//       }
-      // we have the linear new tree, now let's rebuild the tree
+       // we have the linear new tree, now let's rebuild the tree
        drawTree1(newLinearTree1,0,0,'afterReorganize');
       }
       // reinit positions

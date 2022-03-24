@@ -120,6 +120,7 @@ var param1={
  deleteFunctionName  : String('deleteFunction1')   , // delete function name , see under , '' if no delete
  editFunctionName    : String('editFunction1')     , // edit function name , see under , '' if no edit
  editButton          : true                        , // edit button ? true / false
+ hideIdAfterLabel    : false                       , // true = one can't see the (id) of each element
  design              : {
  
   buttonsBorderWidthInPx      : parseInt('1px',10),   // default : 1px
@@ -136,6 +137,7 @@ var param1={
   editBackground              : String('red'),        // default : red    or  globalCssSettings1.backgrounds.editBackground.hexValue      if it exists
   successBackgroundColor      : String('green'),      // default : green  or  globalCssSettings1.backgrounds.successBackground.hexValue   if it exists
   headerBackgroundColor       : String('yellow'),     // default : yellow or  globalCssSettings1.table.headerBackgroundColor.hexValue     if it exists
+  
  }
 }
 // then call the building of the tree with 
